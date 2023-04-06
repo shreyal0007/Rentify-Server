@@ -11,8 +11,8 @@ const authenticateToken = require("../Middleware/authenticateToken");
 
 userRouter.post("/register", register);
 userRouter.post("/login", login);
-userRouter.get("/userDetails",authenticateToken, getUserDetails);
-userRouter.put("/updateUserDetails", updateUserDetails);
-userRouter.put("/updatePassword", updatePassword);
+userRouter.get("/getuserdetails",authenticateToken, getUserDetails);
+userRouter.put("/updateuserdetails", authenticateToken,updateUserDetails);
+userRouter.patch("/updatepassword", updatePassword);
 
 module.exports = userRouter;
