@@ -51,12 +51,10 @@ const login = async (req, res) => {
         message: "Invalid credentials",
       });
     }
-    const token = jwt.sign(
-      { id: existingUser._id, email: existingUser._id },
-      process.env.ACCESS_TOKEN_SECRET
-    );
+    const token = jwt.sign(existingUser._id.toString(), process.env.ACCESS_TOKEN_SECRET);
     res.status(200).json({ user: existingUser, token: token });
   } catch (err) {
+    console.log(err)
     res.status(400).json({
       status: "fail",
       message: err,
@@ -94,7 +92,6 @@ const getUserDetails = async (req, res) => {
     console.log(err)
     res.status(500).json({ message: "internal server error :)" });
   }
-
 };
 
 const updateUserDetails = async (req, res) => {
@@ -106,6 +103,12 @@ const updateUserDetails = async (req, res) => {
     return res.status(200).json({
       token: jwt.sign(newUser._id.toString(), process.env.ACCESS_TOKEN_SECRET),
       firstName: newUser.firstName,
+      github: newUser.github,
+      linkedin: newUser.linkedin,
+      twitter: newUser.twitter,
+      facebook: newUser.facebook,
+      website: newUser.website,
+      instagram: newUser.instagram,
       lastName: newUser.lastName,
       phoneNumber: newUser.phoneNumber,
       following: newUser.following,
@@ -117,16 +120,17 @@ const updateUserDetails = async (req, res) => {
   }
 };
 const updatePassword = async (req, res) => {
+  const { password } = req.body;
   try {
     // find user by id
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.userId);
     if (!user) {
       return res.status(404).send("User not found");
     }
 
     // compare current password with provided old password
     const isPasswordMatch = await bcrypt.compare(
-      req.body.oldPassword,
+      req.body.password,
       user.password
     );
     if (!isPasswordMatch) {
@@ -139,13 +143,11 @@ const updatePassword = async (req, res) => {
     await user.save();
 
     res.send("Password updated successfully");
-  } catch(err) {
-    console.log(err)
+  } catch (err) {
+    console.log(err);
     res.status(400).json({
-
       status: "fail",
       message: err,
-
     });
   }
 };

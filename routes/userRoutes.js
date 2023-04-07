@@ -13,6 +13,6 @@ userRouter.post("/register", register);
 userRouter.post("/login", login);
 userRouter.get("/getuserdetails",authenticateToken, getUserDetails);
 userRouter.put("/updateuserdetails", authenticateToken,updateUserDetails);
-userRouter.patch("/updatepassword", updatePassword);
+userRouter.put("/updatepassword", authenticateToken, updatePassword);
 
 module.exports = userRouter;

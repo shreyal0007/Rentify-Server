@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+
 const UserSchema = new mongoose.Schema({
   username: {
     type: String,
@@ -41,6 +42,32 @@ const UserSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  linkedin: {
+    type: String,
+    default: "",
+  },
+  twitter: {
+    type: String,
+    default: "",
+  },
+  facebook: {
+    type: String,
+    default: "",
+  },
+  instagram: {
+    type: String,
+    default: "",
+  },
+  website: {
+    type: String,
+    default: "",
+  },
+  github: {
+    type: String,
+    default: "",
+  }
+
+
 });
 
 module.exports = mongoose.model("User", UserSchema);
