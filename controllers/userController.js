@@ -13,17 +13,21 @@ const register = async (req, res) => {
         message: "User already exists",
       });
     }
-    const hashPassword = await bcrypt.hash(password, 10);
+    else{ const hashPassword = await bcrypt.hash(password, 10);
+      console.log("tesst")
+
     const newUser = await User.create({
       username: username,
       email: email,
       password: hashPassword,
     });
+    console.log("qwerty")
     const token = jwt.sign(
       { id: newUser._id, email: newUser._id },
       process.env.ACCESS_TOKEN_SECRET
     );
-    res.status(201).json({ user: newUser, token: token });
+    res.status(201).json({ user: newUser, token: token });}
+   
   } catch (err) {
     res.status(400).json({
       status: "fail",
@@ -49,6 +53,7 @@ const login = async (req, res) => {
     if (!isPasswordCorrect) {
       res.status(400).json({
         status: "fail",
+        
         message: "Invalid credentials",
       });
     }
@@ -125,29 +130,34 @@ const updateUserDetails = async (req, res) => {
   }
 };
 const updatePassword = async (req, res) => {
-  const { password } = req.body;
+  
   try {
+    const { password, newPassword } = req.body;
     // find user by id
     const user = await User.findById(req.userId);
     if (!user) {
-      return res.status(404).send("User not found");
+      return res.status(404).json({message:"User not found",success:false});
     }
 
     // compare current password with provided old password
     const isPasswordMatch = await bcrypt.compare(
-      req.body.password,
+      password,
       user.password
     );
     if (!isPasswordMatch) {
-      return res.status(400).send("Invalid old password");
+      return res.status(400).json({message:"Invalid old password",success:false});
     }
 
     // hash and save new password
-    const newPassword = await bcrypt.hash(req.body.newPassword, 10);
-    user.password = newPassword;
+    const newPassword1 = await bcrypt.hash(newPassword, 10);
+    await User.findByIdAndUpdate(
+      user._id,
+      { password: newPassword1 },
+      { new: true }
+    );
     await user.save();
 
-    res.send("Password updated successfully");
+    res.status(200).json({message:"Password updated successfully",success:true});
   } catch (err) {
     console.log(err);
     res.status(400).json({
@@ -156,6 +166,34 @@ const updatePassword = async (req, res) => {
     });
   }
 };
+
+// const updatePassword = async (req, res) => {
+//   try {
+//     const { password, newpassword } = req.body;
+//      const user = await User.findById(req.userId);
+//      if (!user) {
+//        return res.status(404).json({message:"User not found",success:false});
+//     }
+//     const verified = await bcrypt.compare(password, user.password);
+//     if (verified) {
+//       const hashed = await bcrypt.hash(newpassword, 10);
+//       await User.findByIdAndUpdate(
+//         user._id,
+//         { password: hashed },
+//         { new: true }
+//       );
+//       res
+//         .status(200)
+//         .json({ success: true, message: "Password Changed Successfully" });
+//     } else {
+//       throw new Error({ message: "Wrong Password", success: false });
+//     }
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({ message: "Internal server error", success: false });
+//   }
+// };
+
 module.exports = {
   login,
   register,
