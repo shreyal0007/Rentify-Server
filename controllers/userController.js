@@ -134,11 +134,12 @@ const updatePassword = async (req, res) => {
   try {
     const { password, newPassword } = req.body;
     // find user by id
+    console.log(req.body)
     const user = await User.findById(req.userId);
     if (!user) {
       return res.status(404).json({message:"User not found",success:false});
     }
-
+     console.log(user)
     // compare current password with provided old password
     const isPasswordMatch = await bcrypt.compare(
       password,
@@ -147,7 +148,7 @@ const updatePassword = async (req, res) => {
     if (!isPasswordMatch) {
       return res.status(400).json({message:"Invalid old password",success:false});
     }
-
+    console.log(isPasswordMatch)
     // hash and save new password
     const newPassword1 = await bcrypt.hash(newPassword, 10);
     await User.findByIdAndUpdate(
