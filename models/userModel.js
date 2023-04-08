@@ -28,6 +28,16 @@ const UserSchema = new mongoose.Schema({
     max: 50,
     default: "",
   },
+  followers:{
+    type: Number,
+    default: 0,
+
+  },
+  phone:{
+    type: String,
+    default: "",
+    max: 10,
+  },
   firstName: {
     type: String,
     default: "",
@@ -37,10 +47,6 @@ const UserSchema = new mongoose.Schema({
     default: "",
     type: String,
     trim: true,
-  },
-  followers: {
-    type: Number,
-    default: 0,
   },
   linkedin: {
     type: String,

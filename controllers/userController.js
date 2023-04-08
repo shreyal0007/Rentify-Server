@@ -33,8 +33,9 @@ const register = async (req, res) => {
 };
 const login = async (req, res) => {
   const { email, password } = req.body;
-  try {
+  try {console.log(email)
     const existingUser = await User.findOne({ email: email });
+    console.log(existingUser);
     if (!existingUser) {
       res.status(400).json({
         status: "fail",
@@ -52,6 +53,8 @@ const login = async (req, res) => {
       });
     }
     const token = jwt.sign(existingUser._id.toString(), process.env.ACCESS_TOKEN_SECRET);
+    console.log(token)
+    console.log(existingUser)
     res.status(200).json({ user: existingUser, token: token });
   } catch (err) {
     console.log(err)
@@ -99,19 +102,21 @@ const updateUserDetails = async (req, res) => {
     const user = await User.findByIdAndUpdate(req.userId, {
       $set: req.body,
     });
+    console.log(req.bod)
     const newUser = await User.findById(user._id);
+    console.log(newUser)
     return res.status(200).json({
       token: jwt.sign(newUser._id.toString(), process.env.ACCESS_TOKEN_SECRET),
-      firstName: newUser.firstName,
+      username: newUser.username,
       github: newUser.github,
+      phone: newUser.phone,
       linkedin: newUser.linkedin,
       twitter: newUser.twitter,
       facebook: newUser.facebook,
       website: newUser.website,
       instagram: newUser.instagram,
-      lastName: newUser.lastName,
       phoneNumber: newUser.phoneNumber,
-      following: newUser.following,
+      followers: newUser.followers,
       profession: newUser.profession,
     });
   } catch (error) {
